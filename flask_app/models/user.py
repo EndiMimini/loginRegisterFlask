@@ -63,6 +63,18 @@ class User:
         query = "DELETE FROM users WHERE users.id = %(user_id)s;"
         return connectToMySQL(cls.db_name).query_db(query, data)
     
+    @classmethod
+    def get_user_liked_posts(cls, data):
+        query = "SELECT post_id as id from likes WHERE user_id = %(user_id)s;"
+        results = connectToMySQL(cls.db_name).query_db(query, data)
+        likedPosts = []
+        if results:
+            for row in results:
+                likedPosts.append(row['id'])
+            return likedPosts
+        return likedPosts
+
+
     @staticmethod
     def validate_user(user):
         is_valid = True
