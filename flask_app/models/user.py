@@ -4,7 +4,7 @@ import re
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$') 
 
 class User:
-    db_name = 'firstFullStack'
+    db_name = 'bands'
     def __init__( self , data ):
         self.id = data['id']
         self.first_name = data['first_name']
@@ -64,15 +64,26 @@ class User:
         return connectToMySQL(cls.db_name).query_db(query, data)
     
     @classmethod
-    def get_user_liked_posts(cls, data):
-        query = "SELECT post_id as id from likes WHERE user_id = %(user_id)s;"
+    def get_user_joined_bands(cls, data):
+        query = "SELECT members.band_id as id, bands.name as name  from members LEFT JOIN bands on members.band_id = bands.id WHERE members.user_id = %(user_id)s;"
         results = connectToMySQL(cls.db_name).query_db(query, data)
-        likedPosts = []
+        joinedBands = []
         if results:
             for row in results:
-                likedPosts.append(row['id'])
-            return likedPosts
-        return likedPosts
+                joinedBands.append(row)
+            return joinedBands
+        return joinedBands
+    
+    @classmethod
+    def get_user_joined_bandsId(cls, data):
+        query = "SELECT members.band_id as id from members LEFT JOIN bands on members.band_id = bands.id WHERE members.user_id = %(user_id)s;"
+        results = connectToMySQL(cls.db_name).query_db(query, data)
+        joinedBands = []
+        if results:
+            for row in results:
+                joinedBands.append(row['id'])
+            return joinedBands
+        return joinedBands
 
 
     @staticmethod

@@ -10,29 +10,49 @@
 </head>
 <body>
     <nav class="d-flex justify-content-between">
-        <h1>Welcome {{loggedUser.first_name}} {{loggedUser.last_name}}</h1>
-        <a href="/add/post" class="btn btn-primary">Add post</a>
-        <a class="btn btn-danger" href="/logout">Logout</a>
+        <h1>Rock on {{loggedUser.first_name}} {{loggedUser.last_name}}</h1>
+        <div>
+            <a href="/profile" class="btn btn-primary">My bands</a>
+            <a href="/add/band" class="btn btn-primary">New band</a>
+            <a class="btn btn-danger" href="/logout">Logout</a>
+
+        </div>
+       
     </nav>
     <div class="col-lg-12 p-5">
-        <h2 class="text-center">All posts created</h2>
-        {% for post in posts %}
-        <div class="border p-5">
-            <a href="/post/{{post.id}}">Title: {{post.title}}</a>
-            <p>Content: {{post.content}}</p>
-            <p>Creator: {{post.first_name}} {{post.last_name}}</p>
-            <h5>Number of likes: {{post.num_likes}}</h5>
-            {% if loggedUser.id == post.user_id %}
-                <a class="btn btn-warning" href="/edit/post/{{post.id}}">Edit Post</a>
-                <a class="btn btn-danger" href="/delete/post/{{post.id}}">Delete Post</a>
-            {% endif %}
-            {% if post.id in likedPost  %}
-            <a class="btn btn-info" href="/unlike/{{post.id}}">Unlike</a>
-            {% else %}
-            <a class="btn btn-info" href="/like/{{post.id}}">Like</a>
-            {% endif %}
-        </div>
-        {% endfor %}
+        <h2 class="text-center">All bands created</h2>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Band name</th>
+                <th scope="col">Founding Member</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for band in bands %}
+                    <tr>
+                        <th scope="row">{{band.name}}</th>
+                        <td>{{band.first_name}} {{band.last_name}}</td>
+                        <td>{{band.genre}}</td>
+                        <td>
+                            {% if loggedUser.id == band.user_id %}
+                            <a class="btn btn-warning" href="/edit/band/{{band.id}}">Edit Band</a>
+                            <a class="btn btn-danger" href="/delete/band/{{band.id}}">Delete Band</a>
+                            {% else %}
+                                {% if band.id in joinedBands  %}
+                                <a class="btn btn-info" href="/quit/{{band.id}}">Quit</a>
+                                {% else %}
+                                <a class="btn btn-info" href="/join/{{band.id}}">Join</a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+             
+            </tbody>
+          </table>
     </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 from flask_app import app
 from flask_app.models.user import User
-from flask_app.models.post import Post
+from flask_app.models.band import Band
 
 from flask import render_template, redirect, session, request, flash
 from flask_bcrypt import Bcrypt
@@ -77,9 +77,18 @@ def dashboard():
         'user_id': session['user_id']
     }
     loggedUser = User.get_user_by_id(data)
-    posts = Post.get_all()
-    loggedUserLikedPost = User.get_user_liked_posts(data)
-    return render_template('dashboard.html', posts = posts, loggedUser=loggedUser, likedPost = loggedUserLikedPost)
+    bands = Band.get_all()
+    loggedUserJoinedBands = User.get_user_joined_bandsId(data)
+    return render_template('dashboard.html', bands = bands, loggedUser=loggedUser, joinedBands = loggedUserJoinedBands)
+
+@app.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        return redirect('/')
+    data = {
+        'user_id': session['user_id']
+    }
+    return render_template('profile.html',loggedUser = User.get_user_by_id(data), myBands = Band.get_all_createdBands(data), joinedBands = User.get_user_joined_bands(data))
 
 @app.route('/logout')
 def logout():
